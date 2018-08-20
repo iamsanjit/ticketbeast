@@ -36,7 +36,7 @@ class ConcertTest extends TestCase
         $concert = factory(Concert::class)->make([
             'ticket_price' => 6750
         ]);
-        $this->assertEquals('67.50', $concert->ticket_price_in_dollors);
+        $this->assertEquals('67.50', $concert->ticket_price_in_dollars);
     }
 
     /** @test */

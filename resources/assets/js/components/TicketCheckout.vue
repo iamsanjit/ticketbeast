@@ -1,14 +1,12 @@
 <template>
     <div>
-        <div class="row middle-xs">
+        <div class="row justify-content-center m-3">
             <div class="col col-xs-6">
-                <div class="form-group m-xs-b-4">
+                <div class="form-group">
                     <label class="form-label">
-                        Price
+                        Total Price
                     </label>
-                    <span class="form-control-static">
-                        ${{ priceInDollars }}
-                    </span>
+                    <input readonly type="text" class="form-control-plaintext" v-model="formattedTotalPriceInDollars" />
                 </div>
             </div>
             <div class="col col-xs-6">
@@ -62,6 +60,9 @@
             totalPriceInDollars() {
                 return (this.totalPrice / 100).toFixed(2)
             },
+            formattedTotalPriceInDollars() {
+                return  `$${this.totalPriceInDollars}`;
+            }
         },
         methods: {
             initStripe() {

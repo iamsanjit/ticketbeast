@@ -5,17 +5,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'TicketBeast')</title>
-
-        <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         @include('scripts.app')
     </head>
-    <body class="bg-dark">
+    <body>
         <div id="app">
-            @yield('body')
+            @yield('content')
         </div>
-
         @stack('beforeScripts')
-        <script src="{{ elixir('js/app.js') }}"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
         @stack('afterScripts')
         {{ svg_spritesheet() }}
     </body>
