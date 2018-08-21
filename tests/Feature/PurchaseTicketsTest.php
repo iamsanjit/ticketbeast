@@ -144,4 +144,25 @@ class PurchaseTicketsTest extends TestCase
 
         $this->assertResponseHasError('token', $response);
     }
+    
+    /** @test */
+    public function order_is_not_created_if_payment_is_unsuccessful()
+    {
+        $this->withoutExceptionHandling();
+        $concert = factory(Concert::class)->states('published')->create();
+
+        $response = $this->orderTickets($concert, [
+            'email' => 'jane@example.com',
+            'quantity' => 2,
+            'token' => 'invalid-token'
+        ]);
+
+        $response->assertStatus(422);
+        // Make sure no order is created
+        $order = $concert->orders()->where('email', 'jane@example.com')->first();
+        $this->assertNull($order);
+        
+        // Make sure customer did not get charged
+        $this->assertEquals(0, $this->paymentGateway->totalCharges());
+    }
 }
