@@ -14,8 +14,7 @@ class OrderTest extends TestCase
     /** @test */
     public function tickets_are_released_when_order_is_created()
     {
-        $concert = factory(Concert::class)->state('published')->create();
-        $concert->addTickets(10);
+        $concert = factory(Concert::class)->state('published')->create()->addTickets(10);
         $order = $concert->orderTickets(5, 'jane@example.com');
         $this->assertEquals(5, $concert->ticketsRemaining());
 
