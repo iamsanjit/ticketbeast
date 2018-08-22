@@ -46,9 +46,14 @@ class PurchaseTicketsTest extends TestCase
         ]);
 
         $response->assertStatus(201);
+        $response->assertExactJson([
+            'email' => 'jane@example.com',
+            'ticket_quantity' => 2,
+            'amount' => 6530
+        ]);
         $this->assertEquals(6530, $this->paymentGateway->totalCharges());
         $this->assertTrue($concert->hasOrderFor('jane@example.com'));
-        $this->assertEquals(2, $concert->orderFor('jane@example.com')->tickets()->count());
+        $this->assertEquals(2, $concert->orderFor('jane@example.com')->ticketQuantity());
     }
 
     /** @test */

@@ -12,6 +12,18 @@ class OrderTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
+    public function converting_to_an_array()
+    {
+        $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 2000])->addTickets(5);
+        $order = $concert->orderTickets(5, 'jane@example.com');
+
+        $this->assertArraySubset([
+            'email' => 'jane@example.com',
+            'ticket_quantity' => 5,
+            'amount' => 10000,
+        ], $order->toArray());
+    }
+    /** @test */
     public function tickets_are_released_when_order_is_created()
     {
         $concert = factory(Concert::class)->state('published')->create()->addTickets(10);

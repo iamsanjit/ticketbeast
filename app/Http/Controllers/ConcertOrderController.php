@@ -30,7 +30,7 @@ class ConcertOrderController extends Controller
             $concert = Concert::published()->findOrFail($concertId);
             $order = $concert->orderTickets(request('quantity'), request('email'));
             $this->paymentGateway->charge($concert->ticket_price * request('quantity'), request('token'));
-            return response()->json([], 201);
+            return response()->json($order, 201);
         } catch (PaymentFailedException $e) {
             $order->cancel();
             return response()->json([], 422);
