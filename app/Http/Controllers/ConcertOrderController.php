@@ -28,10 +28,11 @@ class ConcertOrderController extends Controller
         
         try {
             $concert = Concert::published()->findOrFail($concertId);
-            $concert->orderTickets(request('quantity'), request('email'));
+            $order = $concert->orderTickets(request('quantity'), request('email'));
             $this->paymentGateway->charge($concert->ticket_price * request('quantity'), request('token'));
             return response()->json([], 201);
         } catch (PaymentFailedException $e) {
+            $order->cancel();
             return response()->json([], 422);
         } catch (NotEnoughTicketsException $e) {
             return response()->json([], 422);
