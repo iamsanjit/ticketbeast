@@ -91,6 +91,18 @@ class ConcertTest extends TestCase
     }
 
     /** @test */
+    public function can_reserve_available_tickets()
+    {
+        $concert = factory(Concert::class)->state('published')->create()->addTickets(10);
+        $this->assertEquals(10, $concert->ticketsRemaining());
+        
+        $reservedTickets = $concert->reserveTickets(3);
+
+        $this->assertEquals(3, $reservedTickets->count());
+        $this->assertEquals(7, $concert->ticketsRemaining());
+    }
+
+    /** @test */
     public function can_not_order_tickets_that_is_already_been_purchased()
     {
         $concert = factory(Concert::class)->state('published')->create()->addTickets(10);
