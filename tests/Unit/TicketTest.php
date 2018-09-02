@@ -9,6 +9,7 @@ use App\Concert;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Ticket;
 use App\Exceptions\NotEnoughTicketsException;
+use Carbon\Carbon;
 
 class TicketTest extends TestCase
 {
@@ -31,6 +32,17 @@ class TicketTest extends TestCase
         $ticket->reserve();
 
         $this->assertNotNull($ticket->fresh()->reserved_at);
+    }
+
+    /** @test */
+    public function ticket_can_be_released()
+    {
+        $ticket = factory(Ticket::class)->create(['reserved_at' => Carbon::now()]);
+        $this->assertNotNull($ticket->reserved_at);
+
+        $ticket->release();
+
+        $this->assertNull($ticket->fresh()->reserved_at);
     }
 
     /** @test */
