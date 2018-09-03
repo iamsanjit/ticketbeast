@@ -44,4 +44,18 @@ class ReservationTest extends TestCase
         }
     }
 
+    /** @test */
+    public function retreving_the_reservation_tickets()
+    {
+        $tickets = collect([
+            (object)['price' => 1000],
+            (object)['price' => 1000],
+            (object)['price' => 1000]
+        ]);
+
+        $reservation = new Reservation($tickets);
+
+        $this->assertCount(3, $reservation->tickets());
+    }
+
 }

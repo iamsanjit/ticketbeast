@@ -37,45 +37,12 @@ class TicketTest extends TestCase
     /** @test */
     public function ticket_can_be_released()
     {
-        $ticket = factory(Ticket::class)->create(['reserved_at' => Carbon::now()]);
+        $ticket = factory(Ticket::class)->state('reserved')->create();
         $this->assertNotNull($ticket->reserved_at);
 
         $ticket->release();
 
         $this->assertNull($ticket->fresh()->reserved_at);
-    }
-
-    /** @test */
-    public function cannot_reserved_a_ticket_that_have_already_been_purchased()
-    {
-        $concert = factory(Concert::class)->create()->addTickets(3);
-        $concert->orderTickets(2, 'jane@example.com');
-        $this->assertEquals(1, $concert->ticketsRemaining());
-
-        try {
-            $concert->reserveTickets(2);
-        } catch (NotEnoughTicketsException $e) {
-            $this->assertEquals(1, $concert->ticketsRemaining());
-            return;
-        }
-
-        $this->fail('Reserving ticket succeed even though tickets were already sold.');
-    }
-
-    /** @test */
-    public function cannot_reserved_a_ticket_that_have_already_been_reserved()
-    {
-        $concert = factory(Concert::class)->create()->addTickets(3);
-        $concert->reserveTickets(2);
-
-        try {
-            $concert->reserveTickets(2);
-        } catch (NotEnoughTicketsException $e) {
-            $this->assertEquals(1, $concert->ticketsRemaining());
-            return;
-        }
-
-        $this->fail('Reserving ticket succeed even though tickets were already reserved.');
     }
 
 }
