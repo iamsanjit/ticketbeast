@@ -25,6 +25,11 @@ class Reservation
         }
     }
 
+    public function complete()
+    {
+        return Order::forTickets($this->tickets(), $this->email(), $this->totalCharges());
+    }
+
     public function tickets()
     {
         return $this->tickets;
