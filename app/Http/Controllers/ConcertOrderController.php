@@ -32,9 +32,9 @@ class ConcertOrderController extends Controller
         try {
             $reservation = $concert->reserveTickets(request('quantity'), request('email'));
 
-            $this->paymentGateway->charge($reservation->totalCharges(), request('token'));
+            // $this->paymentGateway->charge($reservation->totalCharges(), request('token'));
 
-            $order = $reservation->complete();
+            $order = $reservation->complete($this->paymentGateway, request('token'));
 
             return response()->json($order, 201);
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Reservation;
 use Mockery;
 use App\Ticket;
+use App\Billing\FakePaymentGateway;
 
 class ReservationTest extends TestCase
 {
@@ -64,12 +65,14 @@ class ReservationTest extends TestCase
         $concert = factory(Concert::class)->create(['ticket_price' => 1200]);
         $tickets = factory(Ticket::class, 3)->create(['concert_id' => $concert->id]);
         $reservation = new Reservation($tickets, 'jane@example.com');
+        $paymentGateway = new FakePaymentGateway;
 
-        $order = $reservation->complete();
+        $order = $reservation->complete($paymentGateway, $paymentGateway->getValidTestToken());
 
         $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals('jane@example.com', $order->email);
         $this->assertEquals(3600, $order->amount);
+        $this->assertEquals(3600, $paymentGateway->totalCharges());
     }
 
     /** @test */
