@@ -22,7 +22,7 @@ class ReservationTest extends TestCase
             (object) ['price' => 1000]
         ]);
 
-        $reservation = new Reservation($tickets);
+        $reservation = new Reservation($tickets, 'jane@example.com');
 
         $this->assertEquals(3000, $reservation->totalCharges());
     }
@@ -35,7 +35,7 @@ class ReservationTest extends TestCase
             Mockery::spy(Ticket::class),
             Mockery::spy(Ticket::class),
         ]);
-        $reservation = new Reservation($tickets);
+        $reservation = new Reservation($tickets, 'jane@example.com');
 
         $reservation->cancel();
 
@@ -53,9 +53,17 @@ class ReservationTest extends TestCase
             (object)['price' => 1000]
         ]);
 
-        $reservation = new Reservation($tickets);
+        $reservation = new Reservation($tickets, 'jane@example.com');
 
         $this->assertCount(3, $reservation->tickets());
+    }
+
+    /** @test */
+    public function retreving_the_reservation_email()
+    {
+        $reservation = new Reservation(collect(), 'jane@example.com');
+
+        $this->assertEquals('jane@example.com', $reservation->email());
     }
 
 }

@@ -96,9 +96,10 @@ class ConcertTest extends TestCase
         $concert = factory(Concert::class)->state('published')->create()->addTickets(10);
         $this->assertEquals(10, $concert->ticketsRemaining());
         
-        $reservation = $concert->reserveTickets(3);
+        $reservation = $concert->reserveTickets(3, 'jane@example.com');
 
         $this->assertCount(3, $reservation->tickets());
+        $this->assertEquals('jane@example.com', $reservation->email());
         $this->assertEquals(7, $concert->ticketsRemaining());
     }
 
@@ -126,7 +127,7 @@ class ConcertTest extends TestCase
         $this->assertEquals(1, $concert->ticketsRemaining());
 
         try {
-            $concert->reserveTickets(2);
+            $concert->reserveTickets(2, 'john@example.com');
         } catch (NotEnoughTicketsException $e) {
             $this->assertEquals(1, $concert->ticketsRemaining());
             return;
@@ -139,10 +140,10 @@ class ConcertTest extends TestCase
     public function cannot_reserved_a_ticket_that_have_already_been_reserved()
     {
         $concert = factory(Concert::class)->create()->addTickets(3);
-        $concert->reserveTickets(2);
+        $concert->reserveTickets(2, 'john@example.com');
 
         try {
-            $concert->reserveTickets(2);
+            $concert->reserveTickets(2, 'jane@example.com');
         } catch (NotEnoughTicketsException $e) {
             $this->assertEquals(1, $concert->ticketsRemaining());
             return;

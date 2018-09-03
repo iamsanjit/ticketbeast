@@ -54,15 +54,16 @@ class Concert extends Model
         return $tickets;
     }
 
-    public function reserveTickets($ticketQuantity)
+    public function reserveTickets($ticketQuantity, $email)
     {
         $tickets = $this->tickets()->available()->take($ticketQuantity)->get();
         if ($ticketQuantity > $tickets->count()) throw new NotEnoughTicketsException;
+
         $tickets->each(function ($ticket) {
             $ticket->reserve();
         });
-        // return $tickets;
-        return new Reservation($tickets);
+
+        return new Reservation($tickets, $email);
     }
 
     public function createOrder($tickets, $email)
