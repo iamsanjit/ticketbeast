@@ -8,6 +8,7 @@ use App\Billing\PaymentFailedException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
+/** @group integration */
 class StripePaymentGatewayTest extends TestCase
 {
     use DatabaseMigrations;
@@ -56,5 +57,21 @@ class StripePaymentGatewayTest extends TestCase
 
         $this->assertCount(1, $this->newCharges());
         $this->assertEquals(2500, $this->lastCharge()->amount);
+    }
+
+    /** @test */
+    public function charges_with_invalid_token_fail()
+    {
+        $paymentGateway = new StripePaymentGateway(config('services.stripe.secret'));
+        $lastCharge = $this->lastCharge();
+
+        try {
+            $paymentGateway->charge(2500, 'invalid-token');
+        } catch (PaymentFailedException $e) {
+            $this->assertCount(0, $this->newCharges());
+            return;
+        }
+
+        $this->fail('Charges with invalid payment token did not throw an exception.');
     }
 }
