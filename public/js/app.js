@@ -1007,7 +1007,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 var token = window.App.csrfToken;
 
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
@@ -13379,23 +13379,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         purchaseTickets: function purchaseTickets(token) {
-            console.log({
-                email: token.email,
-                quantity: this.quantity,
-                payment_token: token.id
-            });
+            var _this = this;
 
-            // this.processing = true
-
-            // axios.post(`/concerts/${this.concertId}/orders`, {
+            // console.log({
             //     email: token.email,
             //     quantity: this.quantity,
             //     payment_token: token.id,
-            // }).then(response => {
-            //     window.location.href = response.body.url
-            // }).catch(response => {
-            //     this.processing = false
             // })
+
+            this.processing = true;
+
+            axios.post('/concerts/' + this.concertId + '/orders', {
+                email: token.email,
+                quantity: this.quantity,
+                payment_token: token.id
+            }).then(function (response) {
+                _this.processing = false;
+                console.log('Success');
+                // window.location.href = response.body.url
+            }).catch(function (response) {
+                _this.processing = false;
+                console.log('Faliure');
+            });
         }
     },
     created: function created() {

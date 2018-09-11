@@ -12,12 +12,37 @@ class FakePaymentGatewayTest extends TestCase
 {
     use DatabaseMigrations;
 
+    private function getPaymentGateway()
+    {
+        return new FakePaymentGateway();
+    }
+
     /** @test */
     public function payments_with_valid_test_token_are_successful()
     {
         $paymentGateway = new FakePaymentGateway();
-        $paymentGateway->charge(2500, $paymentGateway->getValidTestToken());
-        $this->assertEquals(2500, $paymentGateway->totalCharges());
+
+        $newCharges = $paymentGateway->newChargesDuring(function ($paymentGateway) {
+            $paymentGateway->charge(2100, $paymentGateway->getValidTestToken());
+        });
+
+        $this->assertCount(1, $newCharges);
+        $this->assertEquals(2100, $newCharges->sum());
+    }
+
+    /** @test */
+    public function can_fetch_charges_created_during_callback()
+    {
+        $paymentGateway = $this->getPaymentGateway();
+        $paymentGateway->charge(2000, $paymentGateway->getValidTestToken());
+        $paymentGateway->charge(3000, $paymentGateway->getValidTestToken());
+
+        $newCharges = $paymentGateway->newChargesDuring(function($paymentGateway) {
+            $paymentGateway->charge(4000, $paymentGateway->getValidTestToken());
+            $paymentGateway->charge(5000, $paymentGateway->getValidTestToken());
+        });
+
+        $this->assertEquals([5000, 4000], $newCharges->all());
     }
 
     /** @test */
