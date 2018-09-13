@@ -44,11 +44,10 @@ class StripePaymentGateway implements PaymentGateway
         return array_first(\Stripe\Charge::all(["limit" => 1], ['api_key' => config('services.stripe.secret')])['data']);
     }
 
-    private function newChargesSince($charge)
+    private function newChargesSince($charge = null)
     {
         $newCharges = \Stripe\Charge::all([
-            "limit" => 1,
-            'ending_before' => $charge !== null ? $charge->id : null,
+            'ending_before' => ($charge !== null) ? $charge->id : null,
         ], ['api_key' => config('services.stripe.secret')])['data'];
         return collect($newCharges)->pluck('amount');
     }
