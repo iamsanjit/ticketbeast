@@ -51,7 +51,7 @@ trait PaymentGatewayContractTest
             $this->fail('Charges with invalid payment token did not throw an exception.');
         });
 
-        $this->assertEquals(0, $paymentGateway->totalCharges());
+        $this->assertEquals(0, $newCharges->sum());
     }
 
 }
