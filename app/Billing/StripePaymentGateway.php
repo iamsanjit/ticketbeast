@@ -4,14 +4,13 @@ namespace App\Billing;
 
 use Stripe\Error\InvalidRequest;
 
-
 class StripePaymentGateway implements PaymentGateway
 {
     private $apiKey;
 
     public function __construct($apiKey)
     {
-        $this->apiKey = $apiKey;   
+        $this->apiKey = $apiKey;
     }
 
     public function charge(int $amount, String $token) : void
@@ -20,7 +19,7 @@ class StripePaymentGateway implements PaymentGateway
             \Stripe\Charge::create([
                 "amount" => $amount,
                 "currency" => "cad",
-                "source" => $token, 
+                "source" => $token,
             ], ['api_key' => $this->apiKey]);
         } catch (InvalidRequest $e) {
             throw new PaymentFailedException();
@@ -47,7 +46,7 @@ class StripePaymentGateway implements PaymentGateway
     private function newChargesSince($charge = null)
     {
         $newCharges = \Stripe\Charge::all([
-            'ending_before' => ($charge !== null) ? $charge->id : null,
+            'ending_before' => $charge !== null ? $charge->id : null,
         ], ['api_key' => config('services.stripe.secret')])['data'];
         return collect($newCharges)->pluck('amount');
     }
