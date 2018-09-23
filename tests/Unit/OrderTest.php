@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Order;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Ticket;
 
 class OrderTest extends TestCase
 {
@@ -27,10 +28,15 @@ class OrderTest extends TestCase
     /** @test */
     public function converting_to_an_array()
     {
-        $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 2000])->addTickets(5);
-        $order = $concert->orderTickets(5, 'jane@example.com');
+        $order = factory(Order::class)->create([
+            'confirmation_number' => 'ORDERCONFIRMATION123',
+            'email' => 'jane@example.com',
+            'amount' => 10000,
+        ]);
+        $order->tickets()->saveMany(factory(Ticket::class, 5)->create());
 
         $this->assertArraySubset([
+            'confirmation_number' => 'ORDERCONFIRMATION123',
             'email' => 'jane@example.com',
             'ticket_quantity' => 5,
             'amount' => 10000,

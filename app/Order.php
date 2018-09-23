@@ -12,7 +12,8 @@ class Order extends Model
     {
         $order = Order::create([
             'email' => $email,
-            'amount' =>  $amount
+            'amount' =>  $amount,
+            'confirmation_number' => app(OrderConfirmationNumberGenerator::class)->generate()
         ]);
 
         foreach ($tickets as $ticket) {
@@ -46,7 +47,8 @@ class Order extends Model
         return [
             'email' => $this->email,
             'ticket_quantity' => $this->ticketQuantity(),
-            'amount' => $this->amount
+            'amount' => $this->amount,
+            'confirmation_number' => $this->confirmation_number
         ];
     }
 }

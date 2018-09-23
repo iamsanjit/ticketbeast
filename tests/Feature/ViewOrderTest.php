@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Order;
 use App\Ticket;
 use App\Concert;
+use Carbon\Carbon;
 
 class ViewOrderTest extends TestCase
 {
@@ -18,15 +19,28 @@ class ViewOrderTest extends TestCase
         $this->withoutExceptionHandling();
 
         // Create a concert
-        $concert = factory(Concert::class)->create();
+        $concert = factory(Concert::class)->create([
+            'title' => 'The Red Chord',
+            'subtitle' => 'with Animosity and Ethargy',
+            'date' => Carbon::parse('December 13, 2019 8:00pm')
+        ]);
+
         // Create an order
         $order = factory(Order::class)->create([
-            'confirmation_number' => 'ORDERCONFIRMATION12345'
+            'confirmation_number' => 'ORDERCONFIRMATION12345',
+            'amount' => 8500,
+            'card_last_four' => 1881
         ]);
         // Create tickets
         $ticket = factory(Ticket::class)->create([
             'concert_id' => $concert->id,
-            'order_id' => $order->id
+            'order_id' => $order->id,
+            'code' => 'TICKETCODE123'
+        ]);
+        $ticket = factory(Ticket::class)->create([
+            'concert_id' => $concert->id,
+            'order_id' => $order->id,
+            'code' => 'TICKETCODE456'
         ]);
 
         // Get order confimation page
@@ -38,5 +52,14 @@ class ViewOrderTest extends TestCase
         $response->assertViewHas('order', function ($viewOrder) use ($order) {
             return $viewOrder->id == $order->id;
         });
+
+        $response->assertSee('ORDERCONFIRMATION12345');
+        $response->assertSee('$85.00');
+        $response->assertSee('**** **** **** 1881');
+        $response->assertSee('TICKETCODE123');
+        $response->assertSee('TICKETCODE456');
+        $response->assertSee('The Red Chord');
+        $response->assertSee('with Animosity and Ethargy');
+        $response->assertSee('2019-12-13 20:00');
     }
 }
