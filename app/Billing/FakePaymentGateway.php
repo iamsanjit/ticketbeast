@@ -4,6 +4,7 @@ namespace App\Billing;
 
 class FakePaymentGateway implements PaymentGateway
 {
+    const DEFAULT_TEST_CARD = '0000000000001881';
     private $charges;
     private $tokens;
     private $beforeFirstCharge;
@@ -19,7 +20,7 @@ class FakePaymentGateway implements PaymentGateway
         $this->beforeFirstCharge = $callback;
     }
 
-    public function getValidTestToken($card = '4242424242424242')
+    public function getValidTestToken($card = self::DEFAULT_TEST_CARD)
     {
         $token = 'fake-tok_'.str_random(24);
         $this->tokens[$token] = $card;

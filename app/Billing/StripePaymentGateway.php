@@ -6,6 +6,8 @@ use Stripe\Error\InvalidRequest;
 
 class StripePaymentGateway implements PaymentGateway
 {
+    const DEFAULT_TEST_CARD = '4242424242424242';
+
     private $apiKey;
 
     public function __construct($apiKey)
@@ -13,24 +15,29 @@ class StripePaymentGateway implements PaymentGateway
         $this->apiKey = $apiKey;
     }
 
-    public function charge(int $amount, String $token) : void
+    public function charge(int $amount, String $token)
     {
         try {
-            \Stripe\Charge::create([
+            $stripeCharge = \Stripe\Charge::create([
                 "amount" => $amount,
                 "currency" => "cad",
                 "source" => $token,
             ], ['api_key' => $this->apiKey]);
+
+            return new Charge([
+                'card_last_four' => $stripeCharge['source']['last4'],
+                'amount' => $stripeCharge['amount'],
+            ]);
         } catch (InvalidRequest $e) {
             throw new PaymentFailedException();
         }
     }
 
-    public function getValidTestToken()
+    public function getValidTestToken($card = self::DEFAULT_TEST_CARD)
     {
         return \Stripe\Token::create([
             "card" => [
-                "number" => "4242424242424242",
+                "number" => $card,
                 "exp_month" => 9,
                 "exp_year" => 2019,
                 "cvc" => "314"
@@ -48,7 +55,12 @@ class StripePaymentGateway implements PaymentGateway
         $newCharges = \Stripe\Charge::all([
             'ending_before' => $charge !== null ? $charge->id : null,
         ], ['api_key' => config('services.stripe.secret')])['data'];
-        return collect($newCharges)->pluck('amount');
+        return collect($newCharges)->map(function ($stripeCharge) {
+            return new Charge([
+                'card_last_four' => $stripeCharge['source']['last4'],
+                'amount' => $stripeCharge['amount'],
+            ]);
+        });
     }
 
     public function newChargesDuring($callback)
