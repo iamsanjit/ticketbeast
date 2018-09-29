@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Facades\OrderConfirmationNumber;
 
 class Order extends Model
 {
@@ -11,9 +12,9 @@ class Order extends Model
     public static function forTickets($tickets, $email, $amount)
     {
         $order = Order::create([
+            'confirmation_number' => OrderConfirmationNumber::generate(),
             'email' => $email,
-            'amount' =>  $amount,
-            'confirmation_number' => app(OrderConfirmationNumberGenerator::class)->generate()
+            'amount' =>  $amount
         ]);
 
         foreach ($tickets as $ticket) {
