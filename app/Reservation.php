@@ -27,8 +27,8 @@ class Reservation
 
     public function complete($paymentGateway, $paymentToken)
     {
-        $paymentGateway->charge($this->totalCharges(), $paymentToken);
-        return Order::forTickets($this->tickets(), $this->email(), $this->totalCharges());
+        $charge = $paymentGateway->charge($this->totalCharges(), $paymentToken);
+        return Order::forTickets($this->tickets(), $this->email(), $charge);
     }
 
     public function tickets()

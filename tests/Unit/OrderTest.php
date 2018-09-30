@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Order;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Ticket;
+use App\Billing\Charge;
 
 class OrderTest extends TestCase
 {
@@ -16,14 +17,14 @@ class OrderTest extends TestCase
     /** @test */
     public function can_create_an_order_from_tickets_email_and_amount()
     {
-        $concert = factory(Concert::class)->state('published')->create()->addTickets(5);
-        $tickets = $concert->findTickets(3);
-        $this->assertEquals(5, $concert->ticketsRemaining());
+        $tickets = factory(Ticket::class, 3)->create();
+        $charge = new Charge(['amount' => 3600, 'card_last_four' => '1234']);
+        $order = Order::forTickets($tickets, 'jane@example.com', $charge);
 
-        $order = Order::forTickets($tickets, 'jane@example.com', $tickets->sum('price'));
-
+        $this->assertEquals('jane@example.com', $order->email);
+        $this->assertEquals('1234', $order->card_last_four);
         $this->assertEquals(3, $order->ticketQuantity());
-        $this->assertEquals(2, $concert->ticketsRemaining());
+        $this->assertEquals(3600, $order->amount);
     }
     /** @test */
     public function converting_to_an_array()
@@ -56,9 +57,12 @@ class OrderTest extends TestCase
     /** @test */
     public function retreving_a_nonexisting_order_by_confirmation_number_throws_an_exception()
     {
+        $order = null;
+
         try {
-            Order::findByConfirmationNumber('ORDERCONFIMATION123');
+            $order = Order::findByConfirmationNumber('ORDERCONFIMATION123');
         } catch (ModelNotFoundException $e) {
+            $this->assertNull($order);
             return;
         }
 

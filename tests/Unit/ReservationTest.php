@@ -82,5 +82,4 @@ class ReservationTest extends TestCase
 
         $this->assertEquals('jane@example.com', $reservation->email());
     }
-
 }
