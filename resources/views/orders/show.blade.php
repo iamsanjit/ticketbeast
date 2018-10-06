@@ -9,7 +9,7 @@
                         <h2>Order Summary</h2>
                     </div>
                     <div class="col col-md-6 text-right">
-                        <h5>#{{ $order->confirmation_number }}</h2>
+                        <h5><a href="{{ url('/orders/'.$order->confirmation_number) }}">{{ $order->confirmation_number }}</a></h2>
                     </div>
                     <div class="w-100"></div>
                     <div class="col-12"><div class="border-top mt-3 mb-3"></div></div>
@@ -69,7 +69,7 @@
                                         <span>{{ $ticket->code }}</span>
                                     </div>
                                     <div class="col-12 col-md-6 text-right">
-                                        <span>jane@example.com</span>
+                                        <span>{{$order->email}}</span>
                                     </div>
                                 </div>    
                             </div>

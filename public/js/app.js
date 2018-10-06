@@ -13395,11 +13395,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 payment_token: token.id
             }).then(function (response) {
                 _this.processing = false;
-                console.log('Success');
-                // window.location.href = response.body.url
+                window.location = '/orders/' + response.data.confirmation_number;
             }).catch(function (response) {
                 _this.processing = false;
-                console.log('Faliure');
+                console.log(response);
             });
         }
     },

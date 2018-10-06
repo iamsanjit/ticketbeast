@@ -103,11 +103,10 @@
                     payment_token: token.id,
                 }).then(response => {
                     this.processing = false;
-                    console.log('Success');
-                    // window.location.href = response.body.url
+                    window.location = `/orders/${response.data.confirmation_number}`;
                 }).catch(response => {
                     this.processing = false;
-                    console.log('Faliure');
+                    console.log(response);
                 })
             }
         },

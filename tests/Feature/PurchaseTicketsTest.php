@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Request;
 use App\Facades\OrderConfirmationNumber;
 use App\Facades\TicketCode;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmationEmail;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -48,6 +50,8 @@ class PurchaseTicketsTest extends TestCase
         OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMATION123');
         TicketCode::shouldReceive('generateFor')->andReturn('TICKETCODE1', 'TICKETCODE2', 'TICKETCODE3');
 
+        Mail::fake();
+
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3265])->addTickets(5);
 
         $response = $this->orderTickets($concert, [
@@ -69,7 +73,14 @@ class PurchaseTicketsTest extends TestCase
         ]);
         $this->assertEquals(9795, $this->paymentGateway->totalCharges());
         $this->assertTrue($concert->hasOrderFor('jane@example.com'));
-        $this->assertEquals(3, $concert->orderFor('jane@example.com')->ticketQuantity());
+
+        $order = $concert->orderFor('jane@example.com');
+        $this->assertEquals(3, $order->ticketQuantity());
+
+        Mail::assertSent(OrderConfirmationEmail::class, function ($mail) use ($order) {
+            return $mail->hasTo($order->email)
+                && $mail->order->id === $order->id;
+        });
     }
 
     /** @test */
