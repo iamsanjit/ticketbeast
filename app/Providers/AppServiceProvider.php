@@ -8,6 +8,8 @@ use App\Billing\StripePaymentGateway;
 use Illuminate\Support\Facades\Schema;
 use App\OrderConfirmationNumberGenerator;
 use App\RandomOrderConfirmationNumberGenerator;
+use App\TicketCodeGenerator;
+use App\HashidsTicketCodeGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,8 +36,12 @@ class AppServiceProvider extends ServiceProvider
             return new StripePaymentGateway(config('services.stripe.secret'));
         });
 
+        $this->app->bind(HashidsTicketCodeGenerator::class, function () {
+            return new HashidsTicketCodeGenerator(config('app.ticket_code_salt'));
+        });
+
         $this->app->bind(PaymentGateway::class, StripePaymentGateway::class);
-        
         $this->app->bind(OrderConfirmationNumberGenerator::class, RandomOrderConfirmationNumberGenerator::class);
+        $this->app->bind(TicketCodeGenerator::class, HashidsTicketCodeGenerator::class);
     }
 }

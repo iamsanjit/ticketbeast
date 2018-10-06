@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Request;
 use App\Facades\OrderConfirmationNumber;
+use App\Facades\TicketCode;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -45,29 +46,30 @@ class PurchaseTicketsTest extends TestCase
         $this->withoutExceptionHandling();
 
         OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMATION123');
+        TicketCode::shouldReceive('generateFor')->andReturn('TICKETCODE1', 'TICKETCODE2', 'TICKETCODE3');
+
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3265])->addTickets(5);
 
         $response = $this->orderTickets($concert, [
             'email' => 'jane@example.com',
-            'quantity' => '2',
+            'quantity' => '3',
             'payment_token' => $this->paymentGateway->getValidTestToken()
         ]);
 
         $response->assertStatus(201);
         $response->assertExactJson([
             'email' => 'jane@example.com',
-            'ticket_quantity' => 2,
-            'amount' => 6530,
+            'amount' => 9795,
             'confirmation_number' => 'ORDERCONFIRMATION123',
             'tickets' => [
                 ['code' => 'TICKETCODE1'],
                 ['code' => 'TICKETCODE2'],
-                ['code' => 'TICKETCODE3'],
+                ['code' => 'TICKETCODE3']
             ]
         ]);
-        $this->assertEquals(6530, $this->paymentGateway->totalCharges());
+        $this->assertEquals(9795, $this->paymentGateway->totalCharges());
         $this->assertTrue($concert->hasOrderFor('jane@example.com'));
-        $this->assertEquals(2, $concert->orderFor('jane@example.com')->ticketQuantity());
+        $this->assertEquals(3, $concert->orderFor('jane@example.com')->ticketQuantity());
     }
 
     /** @test */
