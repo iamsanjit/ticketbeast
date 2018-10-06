@@ -9,6 +9,7 @@ use App\Order;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Ticket;
 use App\Billing\Charge;
+use Mockery;
 
 class OrderTest extends TestCase
 {
@@ -17,14 +18,18 @@ class OrderTest extends TestCase
     /** @test */
     public function can_create_an_order_from_tickets_email_and_amount()
     {
-        $tickets = factory(Ticket::class, 3)->create();
+        $tickets = collect([
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class),
+        ]);
         $charge = new Charge(['amount' => 3600, 'card_last_four' => '1234']);
         $order = Order::forTickets($tickets, 'jane@example.com', $charge);
 
         $this->assertEquals('jane@example.com', $order->email);
         $this->assertEquals('1234', $order->card_last_four);
-        $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
+        $tickets->each->shouldHaveReceived('claimFor', [$order]);
     }
     /** @test */
     public function converting_to_an_array()
@@ -34,13 +39,21 @@ class OrderTest extends TestCase
             'email' => 'jane@example.com',
             'amount' => 10000,
         ]);
-        $order->tickets()->saveMany(factory(Ticket::class, 5)->create());
+        $order->tickets()->saveMany([
+            factory(Ticket::class)->create(['code' => 'TICKETCODE1']),
+            factory(Ticket::class)->create(['code' => 'TICKETCODE2']),
+            factory(Ticket::class)->create(['code' => 'TICKETCODE3']),
+        ]);
 
         $this->assertArraySubset([
             'confirmation_number' => 'ORDERCONFIRMATION123',
             'email' => 'jane@example.com',
-            'ticket_quantity' => 5,
             'amount' => 10000,
+            'tickets' => [
+                ['code' => 'TICKETCODE1'],
+                ['code' => 'TICKETCODE2'],
+                ['code' => 'TICKETCODE3'],
+            ]
         ], $order->toArray());
     }
 

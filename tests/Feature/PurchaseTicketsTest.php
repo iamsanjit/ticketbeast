@@ -10,6 +10,7 @@ use App\OrderConfirmationNumberGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Request;
+use App\Facades\OrderConfirmationNumber;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -43,11 +44,7 @@ class PurchaseTicketsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $confirmationNumberGenerator = \Mockery::mock([
-            'generate' => 'ORDERCONFIRMATION123'
-        ]);
-        $this->app->instance(OrderConfirmationNumberGenerator::class, $confirmationNumberGenerator);
-
+        OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMATION123');
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3265])->addTickets(5);
 
         $response = $this->orderTickets($concert, [
@@ -61,7 +58,12 @@ class PurchaseTicketsTest extends TestCase
             'email' => 'jane@example.com',
             'ticket_quantity' => 2,
             'amount' => 6530,
-            'confirmation_number' => 'ORDERCONFIRMATION123'
+            'confirmation_number' => 'ORDERCONFIRMATION123',
+            'tickets' => [
+                ['code' => 'TICKETCODE1'],
+                ['code' => 'TICKETCODE2'],
+                ['code' => 'TICKETCODE3'],
+            ]
         ]);
         $this->assertEquals(6530, $this->paymentGateway->totalCharges());
         $this->assertTrue($concert->hasOrderFor('jane@example.com'));
