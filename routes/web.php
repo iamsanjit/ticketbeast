@@ -6,5 +6,6 @@ Route::get('/moqups', function () {
 
 Route::get('/concerts/{concert}', 'ConcertController@show');
 Route::post('/concerts/{concert}/orders', 'ConcertOrderController@store');
-
 Route::get('/orders/{confirmationNumber}', 'OrderController@show');
+
+Route::post('/login', 'Auth\LoginController@login');
