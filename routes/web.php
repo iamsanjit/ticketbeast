@@ -1,11 +1,12 @@
 <?php
 
 Route::get('/moqups', function () {
-    return view('moqups');
+    return view('auth.login');
 });
 
 Route::get('/concerts/{concert}', 'ConcertController@show');
 Route::post('/concerts/{concert}/orders', 'ConcertOrderController@store');
 Route::get('/orders/{confirmationNumber}', 'OrderController@show');
 
+Route::get('/login', 'Auth\LoginController@show');
 Route::post('/login', 'Auth\LoginController@login');

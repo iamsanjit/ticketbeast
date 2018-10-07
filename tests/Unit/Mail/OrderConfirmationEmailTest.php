@@ -1,5 +1,7 @@
 <?php 
 
+namespace Tests\Unit\Mail;
+
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Mail\OrderConfirmationEmail;

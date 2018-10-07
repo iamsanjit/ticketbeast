@@ -10,11 +10,16 @@ class LoginController extends Controller
 {
     public function login()
     {
-        if (!Auth::attempt(request(['email', 'password']))) {
+        if (!Auth::attempt(request(['email', 'password']), true)) {
             return redirect('/login')->withErrors([
                 'email' => 'Given credentials are invalid.'
             ]);
         }
         return redirect('/backstage/concerts');
+    }
+
+    public function show()
+    {
+        return view('auth.login');
     }
 }

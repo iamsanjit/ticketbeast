@@ -32,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if ($this->app->environment('local', 'testing')) {
+            $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
+        }
+
         $this->app->bind(StripePaymentGateway::class, function () {
             return new StripePaymentGateway(config('services.stripe.secret'));
         });

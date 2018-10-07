@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Concert;
+use App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,5 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         factory(Concert::class)->states('published')->create()->addTickets(10);
+        factory(User::class)->create([
+            'email' => 'iamsanjit@hotmail.com',
+            'password' => bcrypt('secret')
+        ]);
     }
 }

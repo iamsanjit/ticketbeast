@@ -1,6 +1,6 @@
 <?php 
 
-namespace Test\Unit;
+namespace Tests\Unit;
 
 use App\Concert;
 use Tests\TestCase;
