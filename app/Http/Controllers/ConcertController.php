@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 
 class ConcertController extends Controller
 {
-   
     public function show($id)
     {
         $concert = Concert::published()->findOrFail($id);
         return view('concerts.show', compact('concert'));
     }
 
+    public function create()
+    {
+        return view('concerts.create');
+    }
 }

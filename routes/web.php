@@ -10,3 +10,6 @@ Route::get('/orders/{confirmationNumber}', 'OrderController@show');
 
 Route::get('/login', 'Auth\LoginController@show');
 Route::post('/login', 'Auth\LoginController@login');
+Route::post('/logout', 'Auth\LoginController@logout');
+
+Route::get('/backstage/concerts/new', 'ConcertController@create');
