@@ -77,4 +77,9 @@ class Concert extends Model
     {
         return $this->orders()->whereEmail($customerEmail)->first();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

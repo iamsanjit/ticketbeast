@@ -75,9 +75,11 @@ class AddConcertTest extends TestCase
             'additional_information' => 'This concert is 19+',
         ]);
 
-        tap(Concert::first(), function ($concert) use ($response) {
+        tap(Concert::first(), function ($concert) use ($response, $user) {
             $response->assertStatus(302);
             $response->assertRedirect('/concerts/1');
+
+            $this->assertTrue($concert->user->is($user));
 
             $this->assertEquals('The Red Chord', $concert->title);
             $this->assertEquals('with Animosity and Ethargy', $concert->subtitle);
