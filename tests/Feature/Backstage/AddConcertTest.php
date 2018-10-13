@@ -10,6 +10,12 @@ class AddConcertTest extends TestCase
 {
     use DatabaseMigrations;
 
+    public function from($url)
+    {
+        session()->setPreviousUrl(url($url));
+        return $this;
+    }
+
     /** @test */
     public function promoters_can_view_add_concert_form()
     {
@@ -89,6 +95,32 @@ class AddConcertTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/login');
-        $this->assertCount(0, Concert::all());
+        $this->assertEquals(0, Concert::count());
+    }
+
+    /** @test */
+    public function title_is_required()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)->from('/backstage/concerts/create')->post('/backstage/concerts', [
+            'title' => '',
+            'subtitle' => 'with Animosity and Ethargy',
+            'date' => '2019-10-18',
+            'time' => '8:00pm',
+            'venue' => 'The Mosh Pit',
+            'venue_address' => '123 Example Lane',
+            'city' => 'Laraville',
+            'state' => 'ON',
+            'zip' => '17916',
+            'ticket_price' => '32.50',
+            'ticket_quantity' => '75',
+            'additional_information' => 'This concert is 19+',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/backstage/concerts/create');
+        $response->assertSessionHasErrors(['title']);
+        $this->assertEquals(0, Concert::count());
     }
 }
