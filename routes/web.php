@@ -8,8 +8,10 @@ Route::get('/concerts/{concert}', 'ConcertController@show');
 Route::post('/concerts/{concert}/orders', 'ConcertOrderController@store');
 Route::get('/orders/{confirmationNumber}', 'OrderController@show');
 
-Route::get('/login', 'Auth\LoginController@show');
+Route::get('/login', 'Auth\LoginController@show')->name('auth.login');
 Route::post('/login', 'Auth\LoginController@login');
-Route::post('/logout', 'Auth\LoginController@logout');
+Route::post('/logout', 'Auth\LoginController@logout')->name('auth.logout');
 
-Route::get('/backstage/concerts/new', 'ConcertController@create');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/backstage/concerts/new', 'ConcertController@create');
+});
