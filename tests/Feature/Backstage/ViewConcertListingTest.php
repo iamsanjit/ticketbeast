@@ -18,10 +18,6 @@ class ViewConcertListingTest extends TestCase
     public function setUp() {
         parent::setUp();
 
-        TestResponse::macro('getData', function($key) {
-            return $this->original->getData()[$key];
-        });
-
         Collection::macro('assertContains', function($data) {
             Assert::assertTrue($this->contains($data));
         });
@@ -58,9 +54,9 @@ class ViewConcertListingTest extends TestCase
         $response = $this->actingAs($userA)->get('/backstage/concerts');
 
         $response->assertStatus(200);
-        $response->getData('concerts')->assertContains($concertA);
-        $response->getData('concerts')->assertContains($concertB);
-        $response->getData('concerts')->assertContains($concertD);
-        $response->getData('concerts')->assertNotContains($concertC);
+        $response->data('concerts')->assertContains($concertA);
+        $response->data('concerts')->assertContains($concertB);
+        $response->data('concerts')->assertContains($concertD);
+        $response->data('concerts')->assertNotContains($concertC);
     }
 }

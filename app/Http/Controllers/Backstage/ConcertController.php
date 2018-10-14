@@ -13,7 +13,18 @@ class ConcertController extends Controller
 
     public function create()
     {
-        return view('concerts.create');
+        return view('backstage.concerts.create');
+    }
+
+    public function edit($id)
+    {
+        $concert = Auth::user()->concerts()->findOrFail($id);
+
+        abort_if($concert->isPublished(), 403);
+
+        return view('backstage.concerts.edit', [
+            'concert' => $concert
+        ]);
     }
 
     public function index()
