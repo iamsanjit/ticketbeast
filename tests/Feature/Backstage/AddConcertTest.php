@@ -22,7 +22,7 @@ class AddConcertTest extends TestCase
             'city' => 'Laraville',
             'state' => 'ON',
             'zip' => '17916',
-            '`ticket`_price' => '32.50',
+            'ticket_price' => '32.50',
             'ticket_quantity' => '75',
             'additional_information' => 'This concert is 19+',
         ], $overrides);

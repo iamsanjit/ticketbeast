@@ -36,8 +36,31 @@ class ConcertController extends Controller
         ]);
     }
 
-    public function store()
+    public function patch($id)
     {
+        $concert = Concert::find($id);
+
+        $concert->update([
+            'title' => request('title'),
+            'subtitle' => request('subtitle'),
+            'additional_information' => request('additional_information'),
+            'date' => Carbon::parse(vsprintf('%s %s', [
+                request('date'),
+                request('time')
+            ])),
+            'venue' => request('venue'),
+            'venue_address' => request('venue_address'),
+            'city' => request('city'),
+            'state' => request('state'),
+            'zip' => request('zip'),
+            'ticket_price' => request('ticket_price') * 100,
+        ]);
+
+        return redirect()->route('backstage.concerts.index');
+    }
+
+    public function store()
+    {q
         $this->validate(request(), [
             'title' => ['required'],
             'date'  => ['required', 'date'],

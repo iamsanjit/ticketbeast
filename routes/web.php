@@ -13,8 +13,9 @@ Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('auth.logout');
 
 Route::group(['middleware' => 'auth', 'prefix' => 'backstage', 'namespace' => 'Backstage'], function () {
-    Route::get('/concerts', 'ConcertController@index');
+    Route::get('/concerts', 'ConcertController@index')->name('backstage.concerts.index');
     Route::get('/concerts/new', 'ConcertController@create');
     Route::post('/concerts', 'ConcertController@store');
     Route::get('/concerts/{id}/edit', 'ConcertController@edit');
 });
+Route::patch('/backstage/concerts/{id}', 'Backstage\ConcertController@patch');
