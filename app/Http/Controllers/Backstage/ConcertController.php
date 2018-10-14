@@ -10,9 +10,19 @@ use Illuminate\Support\Facades\Auth;
 
 class ConcertController extends Controller
 {
+
     public function create()
     {
         return view('concerts.create');
+    }
+
+    public function index()
+    {
+        $concerts = Auth::user()->concerts;
+
+        return view('backstage.concerts.index', [
+            'concerts' => $concerts
+        ]);
     }
 
     public function store()
