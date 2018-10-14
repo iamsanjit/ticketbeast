@@ -81,6 +81,8 @@ class AddConcertTest extends TestCase
 
             $this->assertTrue($concert->user->is($user));
 
+            $this->assertTrue($concert->isPublished());
+
             $this->assertEquals('The Red Chord', $concert->title);
             $this->assertEquals('with Animosity and Ethargy', $concert->subtitle);
             $this->assertEquals(Carbon::parse('2019-10-18 8:00pm'), $concert->date);
@@ -201,7 +203,6 @@ class AddConcertTest extends TestCase
         $response->assertRedirect('/backstage/concerts/create');
         $response->assertSessionHasErrors(['time']);
         $this->assertEquals(0, Concert::count());
-
     }
 
     /** @test */
@@ -216,7 +217,6 @@ class AddConcertTest extends TestCase
         $response->assertRedirect('/backstage/concerts/create');
         $response->assertSessionHasErrors(['time']);
         $this->assertEquals(0, Concert::count());
-
     }
 
     /** @test */

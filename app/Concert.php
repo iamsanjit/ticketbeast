@@ -36,6 +36,16 @@ class Concert extends Model
         return $this->belongsToMany(Order::class, 'tickets');
     }
 
+    public function isPublished()
+    {
+        return $this->published_at !== null;
+    }
+
+    public function publish()
+    {
+        $this->update(['published_at' => $this->freshTimestamp()]);
+    }
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
