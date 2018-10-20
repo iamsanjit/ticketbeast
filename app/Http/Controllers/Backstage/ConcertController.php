@@ -106,7 +106,7 @@ class ConcertController extends Controller
             'state' => request('state'),
             'zip' => request('zip'),
             'additional_information' => request('additional_information'),
-        ])->addTickets(request('ticket_quantity'));
+        ]);
 
         $concert->publish();
 
