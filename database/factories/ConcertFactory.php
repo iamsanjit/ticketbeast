@@ -11,14 +11,15 @@ $factory->define(App\Concert::class, function (Faker $faker) {
         },
         'title' => 'The Red Chord',
         'subtitle' => 'with Animosity and Ethargy',
+        'additional_information' => 'For tickets call 555-555-5555',
         'date' => Carbon::parse('+2 weeks'),
-        'ticket_price' => 2000,
         'venue' => 'The Mosh Pit',
         'venue_address' => '123 Example Lane',
         'city' => 'Laraville',
         'state' => 'ON',
         'zip' => '17916',
-        'additional_information' => 'For tickets call 555-555-5555',
+        'ticket_price' => 2000,
+        'ticket_quantity' => 10,
     ];
 });
 

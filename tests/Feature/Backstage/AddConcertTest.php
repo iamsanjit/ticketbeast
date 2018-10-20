@@ -386,12 +386,12 @@ class AddConcertTest extends TestCase
     }
 
     /** @test */
-    public function ticket_quantity_must_be_numeric()
+    public function ticket_quantity_must_be_integer()
     {
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->from('/backstage/concerts/create')->post('/backstage/concerts', $this->validParams([
-            'ticket_quantity' => 'not a quantity',
+            'ticket_quantity' => '1.3',
         ]));
 
         $response->assertRedirect('/backstage/concerts/create');

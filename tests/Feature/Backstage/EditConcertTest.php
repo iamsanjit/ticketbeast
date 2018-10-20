@@ -26,6 +26,7 @@ class EditConcertTest extends TestCase
             'state' => 'New state',
             'zip' => '99999',
             'ticket_price' => '32.50',
+            'ticket_quantity' => '10',
         ], $overrides);
     }
 
@@ -117,6 +118,7 @@ class EditConcertTest extends TestCase
             'zip' => '00000',
             'date' => Carbon::parse('2017-01-01 5:00pm'),
             'ticket_price' => 2000,
+            'ticket_quantity' => 5,
         ]);
         $this->assertFalse($concert->isPublished());
 
@@ -132,6 +134,7 @@ class EditConcertTest extends TestCase
             'state' => 'New state',
             'zip' => '99999',
             'ticket_price' => '32.50',
+            'ticket_quantity' => '10',
         ]);
         
         $response->assertStatus(302);
@@ -148,6 +151,7 @@ class EditConcertTest extends TestCase
             $this->assertEquals('New state', $concert->state);
             $this->assertEquals('99999', $concert->zip);
             $this->assertEquals(3250, $concert->ticket_price);
+            $this->assertEquals(10, $concert->ticket_quantity);
         });
     }
 
@@ -169,6 +173,7 @@ class EditConcertTest extends TestCase
             'zip' => '00000',
             'date' => Carbon::parse('2017-01-01 5:00pm'),
             'ticket_price' => 2000,
+            'ticket_quantity' => 5,
         ]);
         $this->assertFalse($concert->isPublished());
 
@@ -184,6 +189,7 @@ class EditConcertTest extends TestCase
             'state' => 'New state',
             'zip' => '99999',
             'ticket_price' => '32.50',
+            'ticket_quantity' => '10',
         ]);
 
         $response->assertStatus(404);
@@ -199,6 +205,7 @@ class EditConcertTest extends TestCase
             $this->assertEquals('Old state', $concert->state);
             $this->assertEquals('00000', $concert->zip);
             $this->assertEquals(2000, $concert->ticket_price);
+            $this->assertEquals(5, $concert->ticket_quantity);
         });
     }
 
@@ -220,6 +227,7 @@ class EditConcertTest extends TestCase
             'zip' => '00000',
             'date' => Carbon::parse('2017-01-01 5:00pm'),
             'ticket_price' => 2000,
+            'ticket_quantity' => 10,
         ]);
         $this->assertTrue($concert->isPublished());
 
@@ -235,6 +243,7 @@ class EditConcertTest extends TestCase
             'state' => 'New state',
             'zip' => '99999',
             'ticket_price' => '32.50',
+            'ticket_quantity' => '5',
         ]);
 
         $response->assertStatus(403);
@@ -250,6 +259,7 @@ class EditConcertTest extends TestCase
             $this->assertEquals('Old state', $concert->state);
             $this->assertEquals('00000', $concert->zip);
             $this->assertEquals(2000, $concert->ticket_price);
+            $this->assertEquals(10, $concert->ticket_quantity);
         });
     }
 
@@ -342,6 +352,7 @@ class EditConcertTest extends TestCase
             'zip' => '00000',
             'date' => Carbon::parse('2017-01-01 5:00pm'),
             'ticket_price' => 2000,
+            'ticket_quantity' => 10,
         ]);
         $this->assertFalse($concert->isPublished());
 
@@ -685,126 +696,72 @@ class EditConcertTest extends TestCase
         });
     }
 
-    // /** @test */
-    // public function ticket_quantity_is_required()
-    // {
-    //     $user = factory(User::class)->create();
-    //     $concert = factory(Concert::class)->create([
-    //         'user_id' => $user->id,
-    //         'title' => 'Old title',
-    //         'subtitle' => 'Old subtitle',
-    //         'additional_information' => 'Old additional information',
-    //         'venue' => 'Old venue',
-    //         'venue_address' => 'Old venue address',
-    //         'city' => 'Old city',
-    //         'state' => 'Old state',
-    //         'zip' => '00000',
-    //         'date' => Carbon::parse('2017-01-01 5:00pm'),
-    //         'ticket_price' => 2000,
-    //     ]);
-    //     $this->assertFalse($concert->isPublished());
+    /** @test */
+    public function ticket_quantity_is_required()
+    {
+        $user = factory(User::class)->create();
+        $concert = factory(Concert::class)->create([
+            'user_id' => $user->id,
+            'ticket_quantity' => 5,
+        ]);
+        $this->assertFalse($concert->isPublished());
 
 
-    //     $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
-    //         'ticket_quantity' => '',
-    //     ]));
+        $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
+            'ticket_quantity' => '',
+        ]));
 
-    //     $response->assertStatus(302);
-    //     $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
-    //     $response->assertSessionHasErrors(['ticket_quantity']);
-    //     tap($concert->fresh(), function ($concert) {
-    //         $this->assertEquals('Old title', $concert->title);
-    //         $this->assertEquals('Old subtitle', $concert->subtitle);
-    //         $this->assertEquals('Old additional information', $concert->additional_information);
-    //         $this->assertEquals(Carbon::parse('2017-01-01 5:00pm'), $concert->date);
-    //         $this->assertEquals('Old venue', $concert->venue);
-    //         $this->assertEquals('Old venue address', $concert->venue_address);
-    //         $this->assertEquals('Old city', $concert->city);
-    //         $this->assertEquals('Old state', $concert->state);
-    //         $this->assertEquals('00000', $concert->zip);
-    //         $this->assertEquals(2000, $concert->ticket_price);
-    //     });
-    // }
+        $response->assertStatus(302);
+        $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
+        $response->assertSessionHasErrors(['ticket_quantity']);
+        tap($concert->fresh(), function ($concert) {
+            $this->assertEquals(5, $concert->ticket_quantity);
+        });
+    }
 
-    // /** @test */
-    // public function ticket_quantity_must_be_numeric()
-    // {
-    //     $user = factory(User::class)->create();
-    //     $concert = factory(Concert::class)->create([
-    //         'user_id' => $user->id,
-    //         'title' => 'Old title',
-    //         'subtitle' => 'Old subtitle',
-    //         'additional_information' => 'Old additional information',
-    //         'venue' => 'Old venue',
-    //         'venue_address' => 'Old venue address',
-    //         'city' => 'Old city',
-    //         'state' => 'Old state',
-    //         'zip' => '00000',
-    //         'date' => Carbon::parse('2017-01-01 5:00pm'),
-    //         'ticket_price' => 2000,
-    //     ]);
-    //     $this->assertFalse($concert->isPublished());
+    /** @test */
+    public function ticket_quantity_must_be_integer()
+    {
+        $user = factory(User::class)->create();
+        $concert = factory(Concert::class)->create([
+            'user_id' => $user->id,
+            'ticket_quantity' => 5,
+        ]);
+        $this->assertFalse($concert->isPublished());
 
 
-    //     $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
-    //         'ticket_quantity' => 'non-numeric',
-    //     ]));
+        $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
+            'ticket_quantity' => '9.5',
+        ]));
 
-    //     $response->assertStatus(302);
-    //     $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
-    //     $response->assertSessionHasErrors(['ticket_quantity']);
-    //     tap($concert->fresh(), function ($concert) {
-    //         $this->assertEquals('Old title', $concert->title);
-    //         $this->assertEquals('Old subtitle', $concert->subtitle);
-    //         $this->assertEquals('Old additional information', $concert->additional_information);
-    //         $this->assertEquals(Carbon::parse('2017-01-01 5:00pm'), $concert->date);
-    //         $this->assertEquals('Old venue', $concert->venue);
-    //         $this->assertEquals('Old venue address', $concert->venue_address);
-    //         $this->assertEquals('Old city', $concert->city);
-    //         $this->assertEquals('Old state', $concert->state);
-    //         $this->assertEquals('00000', $concert->zip);
-    //         $this->assertEquals(2000, $concert->ticket_price);
-    //     });
-    // }
+        $response->assertStatus(302);
+        $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
+        $response->assertSessionHasErrors(['ticket_quantity']);
+        tap($concert->fresh(), function ($concert) {
+            $this->assertEquals(5, $concert->ticket_quantity);
+        });
+    }
 
-    // /** @test */
-    // public function ticket_quantity_must_be_at_least_1()
-    // {
-    //     $user = factory(User::class)->create();
-    //     $concert = factory(Concert::class)->create([
-    //         'user_id' => $user->id,
-    //         'title' => 'Old title',
-    //         'subtitle' => 'Old subtitle',
-    //         'additional_information' => 'Old additional information',
-    //         'venue' => 'Old venue',
-    //         'venue_address' => 'Old venue address',
-    //         'city' => 'Old city',
-    //         'state' => 'Old state',
-    //         'zip' => '00000',
-    //         'date' => Carbon::parse('2017-01-01 5:00pm'),
-    //         'ticket_price' => 2000,
-    //     ]);
-    //     $this->assertFalse($concert->isPublished());
+    /** @test */
+    public function ticket_quantity_must_be_at_least_1()
+    {
+        $user = factory(User::class)->create();
+        $concert = factory(Concert::class)->create([
+            'user_id' => $user->id,
+            'ticket_quantity' => 5,
+        ]);
+        $this->assertFalse($concert->isPublished());
 
 
-    //     $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
-    //         'ticket_quantity' => '0',
-    //     ]));
+        $response = $this->actingAs($user)->from("/backstage/concerts/{$concert->id}/edit")->patch('/backstage/concerts/' . $concert->id, $this->validParams([
+            'ticket_quantity' => '0',
+        ]));
 
-    //     $response->assertStatus(302);
-    //     $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
-    //     $response->assertSessionHasErrors(['ticket_quantity']);
-    //     tap($concert->fresh(), function ($concert) {
-    //         $this->assertEquals('Old title', $concert->title);
-    //         $this->assertEquals('Old subtitle', $concert->subtitle);
-    //         $this->assertEquals('Old additional information', $concert->additional_information);
-    //         $this->assertEquals(Carbon::parse('2017-01-01 5:00pm'), $concert->date);
-    //         $this->assertEquals('Old venue', $concert->venue);
-    //         $this->assertEquals('Old venue address', $concert->venue_address);
-    //         $this->assertEquals('Old city', $concert->city);
-    //         $this->assertEquals('Old state', $concert->state);
-    //         $this->assertEquals('00000', $concert->zip);
-    //         $this->assertEquals(2000, $concert->ticket_price);
-    //     });
-    // }
+        $response->assertStatus(302);
+        $response->assertRedirect("/backstage/concerts/{$concert->id}/edit");
+        $response->assertSessionHasErrors(['ticket_quantity']);
+        tap($concert->fresh(), function ($concert) {
+            $this->assertEquals(5, $concert->ticket_quantity);
+        });
+    }
 }
