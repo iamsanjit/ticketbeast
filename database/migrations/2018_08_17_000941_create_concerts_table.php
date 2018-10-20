@@ -25,7 +25,7 @@ class CreateConcertsTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('zip');
-            $table->string('additional_information');
+            $table->string('additional_information')->nullable();
             $table->datetime('published_at')->nullable();
             $table->timestamps();
         });

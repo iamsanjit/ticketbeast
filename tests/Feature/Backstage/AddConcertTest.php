@@ -163,6 +163,46 @@ class AddConcertTest extends TestCase
     }
 
     /** @test */
+    public function additional_information_is_optional()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $response = $this->actingAs($user)->post('/backstage/concerts', [
+            'title' => 'The Red Chord',
+            'subtitle' => 'with anmosity',
+            'date' => '2019-10-18',
+            'time' => '8:00pm',
+            'venue' => 'The Mosh Pit',
+            'venue_address' => '123 Example Lane',
+            'city' => 'Laraville',
+            'state' => 'ON',
+            'zip' => '17916',
+            'ticket_price' => '32.50',
+            'ticket_quantity' => '75',
+            'additional_information' => '',
+        ]);
+
+        tap(Concert::first(), function ($concert) use ($response) {
+            $response->assertStatus(302);
+            $response->assertRedirect('/concerts/1');
+
+            $this->assertEquals('The Red Chord', $concert->title);
+            $this->assertEquals('with anmosity', $concert->subtitle);
+            $this->assertEquals(Carbon::parse('2019-10-18 8:00pm'), $concert->date);
+            $this->assertEquals('The Mosh Pit', $concert->venue);
+            $this->assertEquals('123 Example Lane', $concert->venue_address);
+            $this->assertEquals('Laraville', $concert->city);
+            $this->assertEquals('ON', $concert->state);
+            $this->assertEquals('17916', $concert->zip);
+            $this->assertEquals('3250', $concert->ticket_price);
+            $this->assertNull($concert->additional_information);
+            $this->assertEquals(75, $concert->ticketsRemaining());
+        });
+    }
+
+    /** @test */
     public function date_is_required()
     {
         $user = factory(User::class)->create();
