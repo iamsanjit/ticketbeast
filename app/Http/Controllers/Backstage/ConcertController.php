@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ConcertController extends Controller
 {
-
     public function create()
     {
         return view('backstage.concerts.create');
@@ -38,7 +37,23 @@ class ConcertController extends Controller
 
     public function patch($id)
     {
-        $concert = Concert::find($id);
+
+        $this->validate(request(), [
+            'title' => ['required'],
+            'date' => ['required', 'date'],
+            'time' => ['required', 'date_format:g:ia'],
+            'venue' => ['required'],
+            'venue_address' => ['required'],
+            'city' => ['required'],
+            'state' => ['required'],
+            'zip' => ['required'],
+            'ticket_price' => ['required', 'numeric', 'min:5'],
+            'ticket_quantity' => ['required', 'numeric', 'min:1'],
+        ]);
+
+        $concert = Auth::user()->concerts()->findOrFail($id);
+
+        abort_if($concert->isPublished(), 403);
 
         $concert->update([
             'title' => request('title'),
@@ -60,7 +75,7 @@ class ConcertController extends Controller
     }
 
     public function store()
-    {q
+    {
         $this->validate(request(), [
             'title' => ['required'],
             'date'  => ['required', 'date'],
