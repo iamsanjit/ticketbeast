@@ -108,6 +108,6 @@ class ConcertController extends Controller
             'additional_information' => request('additional_information'),
         ]);
 
-        return redirect(route('concerts.show', $concert));
+        return redirect(route('backstage.concerts.index'));
     }
 }

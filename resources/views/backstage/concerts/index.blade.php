@@ -20,7 +20,7 @@
                 <p class="text-muted"><strong>Published</strong></p>
             </div>
         </div>
-        <div class="row mb-4">
+        <div class="row no-gutters mb-4">
             @foreach($concerts as $concert)
                 @if($concert->isPublished())
                 <div class="col-md-6 col-lg-4">
@@ -58,7 +58,7 @@
                 <p class="text-muted"><strong>Drafts</strong></p>
             </div>
         </div>
-        <div class="row mb-5">
+        <div class="row no-gutters mb-5">
             @foreach($concerts as $concert)
                 @if(!$concert->isPublished())
                 <div class="col-md-6 col-lg-4">
@@ -83,7 +83,11 @@
                         </div>
                         <div class="mt-3">
                             <a href="{{route('backstage.concerts.edit', $concert)}}" class="btn btn-md btn-light mr-2">Edit</a>
-                            <a href="" class="btn btn-md btn-primary">Publish</a>
+                            <form action="{{route('backstage.published-concerts.store')}}" method="post" class="d-inline-block">
+                                @csrf
+                                <input type="hidden" name="concert_id" value="{{$concert->id}}" />
+                                <button type="submit" class="btn btn-md btn-primary">Publish</button>
+                            </form>
                         </div>
                     </div>
                 </div>
