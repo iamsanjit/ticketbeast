@@ -81,7 +81,7 @@ class AddConcertTest extends TestCase
 
             $this->assertTrue($concert->user->is($user));
 
-            $this->assertTrue($concert->isPublished());
+            $this->assertFalse($concert->isPublished());
 
             $this->assertEquals('The Red Chord', $concert->title);
             $this->assertEquals('with Animosity and Ethargy', $concert->subtitle);
@@ -93,7 +93,7 @@ class AddConcertTest extends TestCase
             $this->assertEquals('17916', $concert->zip);
             $this->assertEquals('3250', $concert->ticket_price);
             $this->assertEquals('This concert is 19+', $concert->additional_information);
-            $this->assertEquals(75, $concert->ticketsRemaining());
+            $this->assertEquals(0, $concert->ticketsRemaining());
         });
     }
 
