@@ -103,8 +103,8 @@
                             @inputerrors('venue')
                         </div>
                         <div class="form-group">
-                            <label for="venue">Street Address</label>
-                            <input type="text" name="venue" class="form-control  @inputfeedback('venue_address')" placeholder="123 Example Ave"  value="{{old('venue_address')}}">
+                            <label for="venue_address">Street Address</label>
+                            <input type="text" name="venue_address" class="form-control  @inputfeedback('venue_address')" placeholder="123 Example Ave"  value="{{old('venue_address')}}">
                             @inputerrors('venue_address')
                         </div>
                         <div class="form-row">
@@ -124,8 +124,8 @@
                             </div>
                             <div class="col-md-4">                        
                                 <div class="form-group">
-                                    <label for="province">Province</label>
-                                    <input type="text" name="province" class="form-control @inputfeedback('zip')" placeholder="90527" value="{{old('zip')}}">
+                                    <label for="zip">Province</label>
+                                    <input type="text" name="zip" class="form-control @inputfeedback('zip')" placeholder="90527" value="{{old('zip')}}">
                                     @inputerrors('zip')
                                 </div>
                             </div>

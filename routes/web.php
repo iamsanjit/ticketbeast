@@ -18,4 +18,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'backstage', 'namespace' => 'B
     Route::post('/concerts', 'ConcertController@store')->name('backstage.concerts.store');
     Route::get('/concerts/{id}/edit', 'ConcertController@edit')->name('backstage.concerts.edit');
     Route::patch('/concerts/{id}', 'ConcertController@patch')->name('backstage.concerts.patch');
+    
+    Route::post('published-concerts', 'PublishedConcertController@store')->name('backstage.published-concerts.store');
 });

@@ -24,15 +24,15 @@
             @foreach($concerts as $concert)
                 @if($concert->isPublished())
                 <div class="col-md-6 col-lg-4">
-                    <div class="card pt-3 pb-3 pl-4 pr-4">
-                        <h5 class="m-0"><strong>Title</strong></h5>
-                        <h6 class="text-muted m-0 mt-1">with subtitle</h6>
+                    <div class="card pt-3 pb-3 pl-4 pr-4 m-2">
+                        <h5 class="m-0"><strong>{{$concert->title}}</strong></h5>
+                        <h6 class="text-muted m-0 mt-1">{{$concert->subtitle}}</h6>
                         <div class="media mt-2">
                             <div class="mr-1">
                                 @icon('location', 'icon-sm icon-muted')
                             </div>
                             <div class="media-body">
-                                The Most Pit - Toronto, ON
+                                {{$concert->venue}} - {{$concert->city}}, {{$concert->state}}
                             </div>
                         </div>
                         <div class="media mt-2">
@@ -40,7 +40,7 @@
                                 @icon('calendar', 'icon-sm icon-muted')
                             </div>
                             <div class="media-body">
-                                September 13, 2019 @ 8:00pm
+                                {{$concert->formatted_date}} @ {{$concert->formatted_time}}
                             </div>
                         </div>
                         <div class="mt-3">
@@ -62,15 +62,15 @@
             @foreach($concerts as $concert)
                 @if(!$concert->isPublished())
                 <div class="col-md-6 col-lg-4">
-                    <div class="card pt-3 pb-3 pl-4 pr-4">
-                        <h5 class="m-0"><strong>Title</strong></h5>
-                        <h6 class="text-muted m-0 mt-1">with subtitle</h6>
+                    <div class="card pt-3 pb-3 pl-4 pr-4 m-2">
+                        <h5 class="m-0"><strong>{{$concert->title}}</strong></h5>
+                        <h6 class="text-muted m-0 mt-1">{{$concert->subtitle}}</h6>
                         <div class="media mt-2">
                             <div class="mr-1">
                                 @icon('location', 'icon-sm icon-muted')
                             </div>
                             <div class="media-body">
-                                The Most Pit - Toronto, ON
+                                {{$concert->venue}} - {{$concert->city}}, {{$concert->state}}
                             </div>
                         </div>
                         <div class="media mt-2">
@@ -78,7 +78,7 @@
                                 @icon('calendar', 'icon-sm icon-muted')
                             </div>
                             <div class="media-body">
-                                September 13, 2019 @ 8:00pm
+                                {{$concert->formatted_date}} @ {{$concert->formatted_time}}
                             </div>
                         </div>
                         <div class="mt-3">
