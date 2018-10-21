@@ -10,6 +10,9 @@ use App\OrderConfirmationNumberGenerator;
 use App\RandomOrderConfirmationNumberGenerator;
 use App\TicketCodeGenerator;
 use App\HashidsTicketCodeGenerator;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\App;
+use Illuminate\Validation\Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,9 +23,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Older version of mysql only support 767 bytes of key length
-        // We will force laravel to use keylenght with in that range
         Schema::defaultStringLength(191);
+
+        Blade::directive('inputfeedback', function ($expression) {
+            return "<?php echo (\$errors->has($expression)) ? 'is-invalid' : ''; ?>";
+        });
+
+        Blade::directive('inputerrors', function ($expression) {
+            return "<?php
+                if (\$errors->has($expression)) {
+                    echo '<div class=\"invalid-feedback\">';
+                    foreach(\$errors->get($expression) as \$error) {
+                        echo '<span>' . \$error . '</span>';
+                    }
+                    echo '</div>';
+                }
+            ?>";
+        });
     }
 
     /**

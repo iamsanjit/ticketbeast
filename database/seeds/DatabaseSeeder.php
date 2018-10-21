@@ -13,10 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(Concert::class)->states('published')->create()->addTickets(10);
-        factory(User::class)->create([
+        $user = factory(User::class)->create([
             'email' => 'iamsanjit@hotmail.com',
             'password' => bcrypt('secret')
         ]);
+        \ConcertFactory::createPublished(['ticket_quantity' => 10, 'user_id' => $user->id]);
+        \ConcertFactory::createPublished(['ticket_quantity' => 10, 'user_id' => $user->id]);
+        \ConcertFactory::createUnpublished(['ticket_quantity' => 10, 'user_id' => $user->id]);
+
+        \ConcertFactory::createPublished(['ticket_quantity' => 10]);
     }
 }

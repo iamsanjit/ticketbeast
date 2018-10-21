@@ -71,7 +71,7 @@ class Concert extends Model
         return $this->tickets()->available()->count();
     }
 
-    public function addTickets($quantity)
+    private function addTickets($quantity)
     {
         foreach (range(1, $quantity) as $i) {
             $this->tickets()->create([]);

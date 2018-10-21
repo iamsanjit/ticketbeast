@@ -6,6 +6,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'TicketBeast')</title>
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <style>
+            .zondicon.icon-sm {
+                width: 0.7rem;
+                height: 0.7rem;
+            }
+
+            .zondicon.icon-muted {
+                color: #6c757d !important;
+                fill: #6c757d !important;
+            }
+        </style>
         @include('scripts.app')
     </head>
     <body>
@@ -25,16 +36,6 @@
                     </div>
                 </div>  
             </nav>
-            
-            <div class="pt-3 pb-3 border-bottom bg-white">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="m-0 p-0">@yield('title', 'Backstage')</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             @yield('content')
 

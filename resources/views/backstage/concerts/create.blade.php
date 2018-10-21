@@ -1,12 +1,18 @@
 @extends('layouts.backstage')
 
-@section('title')
-    Create a concert
-@endsection
-
 @section('content')
-<form>
+<div class="pt-3 pb-3 border-bottom bg-white">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h4 class="m-0 p-0">Create a concert</h4>
+            </div>
+        </div>
+    </div>
+</div>
 
+<form action="{{route('backstage.concerts.store')}}" method="post">
+    @csrf
     <!-- Concert details -->
     <div class="pt-4 pb-4 border-bottom">
         <div class="container">
@@ -24,15 +30,18 @@
                     <div class="card p-4">
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input type="text" name="title" class="form-control" placeholder="The header lines">
+                            <input type="text" name="title" class="form-control @inputfeedback('title')" placeholder="The header lines" value="{{old('title')}}">
+                            @inputerrors('title')
                         </div>
                         <div class="form-group">
                             <label for="subtitle">Subtitle</label>
-                            <input type="text" name="subtitle" class="form-control" placeholder="with the openers (optional)">
+                            <input type="text" name="subtitle" class="form-control @inputfeedback('subtitle')" placeholder="with the openers (optional)" value="{{old('subtitle')}}">
+                            @inputerrors('subtitle')
                         </div>
                         <div class="form-group">
                             <label for="additional_information">Additional Information</label>
-                            <textarea name="additional_information" class="form-control" placeholder="This concert is 19+ (optional)"></textarea>
+                            <textarea name="additional_information" class="form-control  @inputfeedback('additional_information')" placeholder="This concert is 19+ (optional)">{{old('additional_information')}}</textarea>
+                            @inputerrors('additional_information')
                         </div>
                     </div>
                 </div>
@@ -57,13 +66,15 @@
                             <div class="col-md-6">                        
                                 <div class="form-group">
                                     <label for="date">Date</label>
-                                    <input type="date" name="date" class="form-control">
+                                    <input type="date" name="date" class="form-control  @inputfeedback('date')"  value="{{old('date')}}">
+                                    @inputerrors('date')
                                 </div>
                             </div>
                             <div class="col-md-6">                        
                                 <div class="form-group">
                                     <label for="time">Time</label>
-                                    <input type="time" name="time" class="form-control">
+                                    <input type="text" name="time" class="form-control  @inputfeedback('time')" placeholder="8:00pm"  value="{{old('time')}}">
+                                    @inputerrors('time')
                                 </div>
                             </div>
                         </div>
@@ -88,29 +99,34 @@
                     <div class="card p-4">
                         <div class="form-group">
                             <label for="venue">Venue Name</label>
-                            <input type="text" name="venue" class="form-control" placeholder="The mosh pit">
+                            <input type="text" name="venue" class="form-control  @inputfeedback('venue')" placeholder="The mosh pit"  value="{{old('venue')}}">
+                            @inputerrors('venue')
                         </div>
                         <div class="form-group">
                             <label for="venue">Street Address</label>
-                            <input type="text" name="venue" class="form-control" placeholder="123 Example Ave">
+                            <input type="text" name="venue" class="form-control  @inputfeedback('venue_address')" placeholder="123 Example Ave"  value="{{old('venue_address')}}">
+                            @inputerrors('venue_address')
                         </div>
                         <div class="form-row">
                             <div class="col-md-4">                        
                                 <div class="form-group">
                                     <label for="city">City</label>
-                                    <input type="text" name="city" class="form-control" placeholder="Laraville">
+                                    <input type="text" name="city" class="form-control @inputfeedback('city')" placeholder="Laraville"  value="{{old('city')}}">
+                                    @inputerrors('city')
                                 </div>
                             </div>
                             <div class="col-md-4">                        
                                 <div class="form-group">
                                     <label for="state">State</label>
-                                    <input type="text" name="state" class="form-control" placeholder="ON">
+                                    <input type="text" name="state" class="form-control @inputfeedback('state')" placeholder="ON" value="{{old('state')}}">
+                                    @inputerrors('state')
                                 </div>
                             </div>
                             <div class="col-md-4">                        
                                 <div class="form-group">
                                     <label for="province">Province</label>
-                                    <input type="text" name="province" class="form-control" placeholder="90527">
+                                    <input type="text" name="province" class="form-control @inputfeedback('zip')" placeholder="90527" value="{{old('zip')}}">
+                                    @inputerrors('zip')
                                 </div>
                             </div>
                         </div>
@@ -141,14 +157,16 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">$</span>
                                         </div>
-                                        <input type="text" class="form-control" name="ticket_price" placeholder="0.00" aria-label="Dollar amount (with dot and two decimal places)">
+                                        <input type="text" class="form-control  @inputfeedback('ticket_price')" name="ticket_price" placeholder="0.00" aria-label="Dollar amount (with dot and two decimal places)"  value="{{old('ticket_price')}}">
+                                        @inputerrors('ticket_price')
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">                        
                                 <div class="form-group">
-                                    <label for="tickets_available">Tickets Available</label>
-                                    <input type="input" name="tickets_available" class="form-control" placeholder="250">
+                                    <label for="ticket_quantity">Tickets Available</label>
+                                    <input type="input" name="ticket_quantity" class="form-control  @inputfeedback('ticket_quantity')" placeholder="250" value="{{old('ticket_quantity')}}">
+                                    @inputerrors('ticket_quantity')
                                 </div>
                             </div>
                         </div>
